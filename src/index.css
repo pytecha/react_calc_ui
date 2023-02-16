@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: aquire;
+  src: url("./assets/AquireBold.otf");
+  font-weight: bold;
+}
+@font-face {
+  font-family: latin;
+  src: url("./assets/latin-math.otf");
+}
+body {
+  background-color: hsl(216, 12.2%, 83.9%);
+}
+#screen, #funcspad, #numspad {
+  font-family: Monospace;
+}
+#numspad {
+  font-size: 1.5em;
+}
+#funcspad {
+  font-size: 1.15em;
+}
+#screen-input::-webkit-scrollbar {
+  display: none;
+}
+#screen-input {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+button:active {
+  outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
