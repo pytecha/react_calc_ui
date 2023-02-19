@@ -420,9 +420,9 @@ export default ({
           
           {toggles.errorActive &&
             <div className={floatClasses} style={styles}>
-              <div className="flex justify-center w-full h-full">
+              <div className="flex justify-center w-full h-full overflow-y-scroll">
                 <div className="self-center"><ErrorIcon /></div>
-                <p className="self-center text-3xl p-0 m-0 font-bold text-[#333]">{errorMessage}</p>
+                <span className="self-center text-3xl font-bold text-[#333]">{errorMessage}</span>
               </div>
             </div>
           }

@@ -84,11 +84,6 @@ const App = () => {
 	const fetchApiMain = (data, sto = "") => axios.post(
 		`${baseUrl}/main`, data)
 		.then(res => {
-			const error = res.data.error;
-			if (error) {
-				activateError(error);
-				return
-			}
 			setAnswer(res.data.solution[1]);
 			appRefs.current.appVars.Ans = res.data.solution[0];
 			appRefs.current.appHist.push(res.data.solution[0]);
@@ -146,7 +141,7 @@ const App = () => {
 				}
 			}
 		})
-		.catch(_res => activateError());
+		.catch(err => activateError(err.response.statusText));
 
 	const fetchApiExtend = ({
 		endpoint, kind = "", dp = 0, sto = ""
@@ -188,16 +183,11 @@ const App = () => {
 			}
 			axios.post(`${baseUrl}/${endpoint}`, data)
 				.then(res => {
-					const error = res.data.error;
-					if (error) {
-						activateError(error);
-						return
-					}
 					appRefs.current.appVars = {
 						...appRefs.current.appVars, ...res.data.solution
 					};
 				})
-				.catch(_res => activateError());
+				.catch(err => activateError(err.response.statusText));
 		} else {
 			axios.post(`${baseUrl}/conversion`, {
 				expression: appRefs.current.appVars.Ans,
@@ -207,11 +197,6 @@ const App = () => {
 				} : {})
 			})
 				.then(res => {
-					const error = res.data.error;
-					if (error) {
-						activateError(error);
-						return
-					}
 					if (kind === "round") {
 						setAnswer(res.data.solution[1]);
 						appRefs.current.appVars.Ans = res.data.solution[0];
@@ -219,7 +204,7 @@ const App = () => {
 						setAnswer(res.data.solution);
 					}
 				})
-				.catch(_res => activateError());
+				.catch(err => activateError(err.response.statusText));
 		}
 	};
 
