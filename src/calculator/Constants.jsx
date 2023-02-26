@@ -225,5 +225,15 @@ export const statsEntry = [
   ["ypred", <span>y&#770;</span>]
 ];
 
+export const RegFormulae = [
+  ["lin",<span>y=a+bx</span>],
+  ["inv",<span>y=a+bx<sup>-1</sup></span>],
+  ["log",<span>y=a+blog<sub>e</sub>x</span>],
+  ["exp1",<span>y=ax<sup>b</sup></span>],
+  ["exp2",<span>y=ae<sup>bx</sup></span>],
+  ["exp3",<span>y=ab<sup>x</sup></span>],
+  ["quad",<span>y=a+bx+cx<sup>2</sup></span>]
+];
+
 const voidFunc = (...args) => undefined;
 export const voidFuncs = [voidFunc, voidFunc, voidFunc, voidFunc]

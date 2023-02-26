@@ -7,28 +7,23 @@ import {
 }
   from "./Contexts";
 import {
-  stateClasses, statsEntry
+  statsEntry, RegFormulae
 }
   from "./Constants";
-import {
-  answerBox, cursor, blink, rangeselector
-}
-  from "./screen.module.css";
-import { ErrorIcon } from "./Icons"
+import styles from "./screen.module.css";
+import { ErrorIcon } from "./Icons";
 
 export default ({
   props: [exprs, answer, setAnswer, errorMessage, dispatchKeyState, dispatchExprTokenState, manageAppRefs]
 }) => {
   const toggles = useContext(StatesContext);
-  const [precision, setPrecision] = useState(0);
-  const [regMenu, setRegMenu] = useState(false);
-  const [precMenu, setPrecMenu] = useState(false);
+  const [rangeState, setRangeState] = useState({open: false, value: 1});
   const exprDiv = useRef(null);
   const exprSpan2 = useRef(null);
   const {left, right} = exprs;
   const rightMaxIndex = right.length - 1;
-  const styles = {
-    "boxShadow": "inset -2px -2px 1px 1px rgba(0, 0, 0, 0.2), inset 2px 2px 1px 1px rgba(0, 0, 0, 0.2)"
+  const boxShadow = {
+    boxShadow: "inset -2px -2px 1px 1px rgba(0, 0, 0, 0.2), inset 2px 2px 1px 1px rgba(0, 0, 0, 0.2)"
   };
   const floatClasses = "absolute top-0 left-0 z-30 w-full h-full p-1 bg-gray-200 rounded-md";
   const headClasses = "block font-semibold text-md text-gray-600";
@@ -41,33 +36,27 @@ export default ({
     const timeoutId = setTimeout(() => {
       dispatchKeyState({ type: "togglemodeorclear" });
       dispatchKeyState({ type: "togglepower", state: true });
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
     }, 200);
   };
-  
-  useEffect(() => {
-    setPrecision(1)
-  }, [toggles]); 
   
   useEffect(() => {
     exprDiv.current?.scrollTo({left: exprSpan2.current?.offsetLeft-315 || 0});
   }, [exprs, toggles.navActive]);
 
   return (
-    <div className="relative flex flex-col p-1 bg-gray-200 rounded-md h-[7rem] mb-2 select-none" id="screen" style={styles}>
+    <div className="relative flex flex-col p-1 bg-gray-200 rounded-md h-[7rem] mb-2 select-none" style={{...boxShadow, fontFamily: "Monospace"}}>
       {toggles.powerActive &&
         <>
-        {/* main screen start*/}
           <div className="flex justify-between w-full h-[12.5%]">
             {indicators.map(([indicator, state], key) => <span className={`block rounded px-[0.425em] text-[0.65em] m-auto ${toggles[state] ? classesActive : classesPassive}`} key={key}>{indicator}</span>)}
           </div>
           <div
-            className="relative flex flex-nowrap place-items-center mt-1 rounded-sm h-[41%] w-full bg-[rgba(0,0,0,0.1)] text-lg px-1 overflow-x-scroll"
+            className={`relative flex flex-nowrap place-items-center mt-1 rounded-sm h-[41%] w-full bg-[rgba(0,0,0,0.1)] text-lg px-1 overflow-x-scroll ${styles.screeninput}`}
             ref={exprDiv}
-            id="screen-input"
           >
             <span
-              className={`whitespace-nowrap ${toggles.cursorActive && cursor} ${!toggles.navActive && blink}`}
+              className={`whitespace-nowrap ${toggles.cursorActive && styles.cursor} ${!toggles.navActive && styles.blink}`}
             >
               {left}
             </span>
@@ -78,80 +67,53 @@ export default ({
             </span>
           </div>
           <div className="grid place-items-end mt-[0.75px] rounded-sm h-[43%] w-full bg-[rgba(0,0,0,0.025)] text-4xl px-1 overflow-x-scroll">
-            <span className={`flex flex-nowrap whitespace-nowrap ${answerBox}`}>{answer}</span>
-          </div> {/* main screen end*/}
+            <span className={`flex flex-nowrap whitespace-nowrap ${styles.answerbox}`}>{answer}</span>
+          </div>
 
 
           {toggles.modeActive &&
             <>
-              // reg menu start
-              {regMenu &&
-                <div className="absolute z-50 w-[50%] h-[80%] top-1 right-5 bg-gray-200 rounded ring-2 ring-red-900">
-                  <span className="block text-left pl-2 bg-red-900 text-gray-100">TYPES (<span className="text-sm">Tap Select</span>)</span>
+              {rangeState.open &&
+                <div className="absolute z-40 w-[55%] h-[85%] top-2.5 right-2.5 bg-gray-200 rounded ring-2 ring-red-900">
+                  <span className="block text-center bg-red-900 text-gray-100">SET {rangeState?.initiater === "REG" ? "FORMULAR" : "LEVEL"}</span>
                   <span
                     role="button"
                     className="absolute inline-block px-1 top-1 right-2 text-gray-100 text-xs font-bold"
-                    onClick={() => setRegMenu(false)}
+                    onClick={() => setRangeState({...rangeState, open: false})}
                   >
                     X
                   </span>
-                  <div className="grid grid-cols-3 gap-2 p-1">
-                    {["Lin", "Log", "Exp", "Pwr", "Inv", "Quad"]
-                      .map((value, key) => (
-                        <span
-                          key={key}
-                          className="bg-gray-500 text-center text-gray-100 rounded"
-                          onClick={() => {
-                            manageAppRefs({ key: "activeReg", value: value.toLowerCase() })
-                            setRegMenu(false);
-                            modeOff();
-                          }
-                          }
-                          role="button"
-                        >
-                          {value}
-                        </span>
-                      ))
-                    }
-                  </div>
-                </div>
-              }// reg menu end
-
-
-              // precision menu start
-              {precMenu &&
-                <div className="absolute z-40 w-[50%] h-[82.5%] top-1 right-5 bg-gray-200 rounded ring-2 ring-red-900">
-                  <span className="block text-center bg-red-900 text-gray-100">SET LEVEL</span>
-                  <span
-                    role="button"
-                    className="absolute inline-block px-1 top-1 right-2 text-gray-100 text-xs font-bold"
-                    onClick={() => setPrecMenu(false)}
-                  >
-                    X
-                  </span>
+                  <label htmlFor="range-input" className="block text-center">{rangeState?.initiater === "REG"  ? <><span>F: </span> {RegFormulae[rangeState.value][1]}</> : `Level: ${rangeState.value}`}</label>
                   <input
-                    className={`block border-0 rounded bg-gray-100 ring-2 ring-gray-300 focus:outline-none mx-auto px-1 text-center w-[7.5em] h-[2em] mt-1 ${rangeselector}`}
-                    type="range" step="1" value={precision}
-                    max={toggles.nrmActive ? 2 : 12}
-                    min={toggles.nrmActive ? 1 : 0}
-                    onChange={(e) => setPrecision(e.target.value)} role="button"
+                    className={`block border-0 rounded bg-gray-100 ring-2 ring-gray-300 focus:outline-none px-1 text-center w-[8em] mx-auto ${styles.rangeselector}`}
+                    type="range" step="1" value={rangeState.value}
+                    max={rangeState?.initiater === "NRM" ? 2 : rangeState?.initiater === "REG" ? 6 : 12}
+                    min={rangeState?.initiater === "NRM" ? 1 : 0}
+                    onChange={(e) => setRangeState({...rangeState, value: e.target.value})}
+                    role="button"
+                    id="range-input"
                   />
-                  <span className="block text-center">{precision}</span>
                   <span
-                    className="absolute bottom-0.5 right-1 px-2 bg-green-500 rounded"
+                    className="absolute bottom-0 right-0 px-2.5 py-0.5 bg-green-500 rounded"
+                    role="button"
                     onClick={() => {
-                      manageAppRefs({ key: "activeDp", value: precision })
-                      setPrecMenu(false);
+                      manageAppRefs(
+                        rangeState?.initiater === "REG" ?
+                        { key: "activeReg", value: RegFormulae[rangeState.value][0] }
+                          :
+                        { key: "activeDp", value: rangeState.value }
+                      )
+                      setRangeState({...rangeState, open: false});
                       modeOff();
                     }}
                   >
-                    Ok
+                    OK
                   </span>
                 </div>
-              }// precision menu end
+              }
 
 
-              <div className={`${floatClasses}  overflow-y-scroll`} style={styles}>
+              <div className={`${floatClasses}  overflow-y-scroll`} style={boxShadow}>
                 <span className="block py-1 font-bold text-lg text-center bg-gray-500 rounded-sm">MODE OPTIONS</span>
                 <div className="grid grid-cols-2 gap-x-2">
                   <div className={gridClasses}>
@@ -180,8 +142,7 @@ export default ({
                         className={getStateClass(toggles.regActive)}
                         onClick={() => {
                           dispatchKeyState({ type: "toggleregsd", kind: "reg" })
-                          setPrecMenu(false);
-                          setRegMenu(true);
+                          setRangeState({...rangeState, open: true, initiater: "REG"});
                         }}
                       >
                         REG
@@ -219,8 +180,7 @@ export default ({
                             className={getStateClass(toggles[`${value.toLowerCase()}Active`])}
                             onClick={() => {
                               dispatchKeyState({ type: "togglefixscinrm", kind: value })
-                              setRegMenu(false)
-                              setPrecMenu(true)
+                              setRangeState({...rangeState, open: true, initiater: value, value: value === "NRM" ? 1 : 4});
                             }}
                           >
                             {value}
@@ -278,7 +238,7 @@ export default ({
           }
 
           {toggles.clearActive &&
-            <div className={`${floatClasses} border-2`} style={styles}>
+            <div className={`${floatClasses} border-2`} style={boxShadow}>
               <span className="block py-1 font-bold text-lg text-center bg-gray-500 rounded-sm">CLEAR OPTIONS</span>
               <div className="grid grid-cols-3 gap-3 mt-3 w-[75%] mx-auto">
                 <span
@@ -330,7 +290,7 @@ export default ({
 
 
           {toggles.drgActive &&
-            <div className={`${floatClasses} border-2`} style={styles}>
+            <div className={`${floatClasses} border-2`} style={boxShadow}>
               <span className="block py-1 font-bold text-lg text-center bg-gray-500 rounded-sm">KEY-PRESS SELECT</span>
               <div className="grid grid-cols-3 gap-y-1 gap-x-3 place-items-center mt-2 w-[75%] mx-auto">
                 {["d", "r", "g"]
@@ -349,7 +309,7 @@ export default ({
 
 
           {toggles.statActive &&
-            <div className={`${floatClasses} z-50 overflow-y-scroll`} style={styles}>
+            <div className={`${floatClasses} z-50 overflow-y-scroll`} style={boxShadow}>
               <span className="block py-1 font-bold text-lg text-center bg-gray-500 rounded-sm">STATS (<span className="text-sm">Double Tap Select</span>)</span>
               <div className="grid grid-cols-5 gap-0.5 mt-1">
                 {statsEntry
@@ -359,7 +319,7 @@ export default ({
                       className="bg-gray-300 rounded p-1"
                       role="button"
                       onDoubleClick={() => {
-                        dispatchExprTokenState({ type: "add", token: `@${value[0]}`, input: value[1] || value[0], ins: toggles.insActive });
+                        dispatchExprTokenState({ type: "add", token: appVars[value[0]], input: value[1] || value[0], ins: toggles.insActive });
                         dispatchKeyState({
                           type: "multitoggles",
                           states: {
@@ -373,9 +333,14 @@ export default ({
                       <span
                         className="block text-xs overflow-x-scroll whitespace-nowrap"
                       >
-                        {value[0].includes("pred") ?
-                          appVars[value[0]].slice(7, -1).replace(/@/g, "") :
-                          appVars[value[0]]
+                        {
+                          function(obj, key) {
+                            obj = obj[key]
+                            return key.includes("pred") ?
+                              obj.slice(6, obj.length).replace(/@/g, "")
+                                :
+                              obj;
+                          }(appVars, value[0])
                         }
                       </span>
                     </div>
@@ -387,7 +352,7 @@ export default ({
 
 
           {toggles.histActive &&
-            <div className={`${floatClasses} z-50 overflow-y-scroll`} style={styles}>
+            <div className={`${floatClasses} z-50 overflow-y-scroll`} style={boxShadow}>
               <span className="block py-1 font-bold text-lg text-center bg-gray-500 rounded-sm">HIST (<span className="text-sm">Double Tap Select</span>)</span>
               <div className="grid grid-cols-5 gap-0.5 mt-1">
                 {manageAppRefs({key: "appHist"})
@@ -419,7 +384,7 @@ export default ({
           
           
           {toggles.errorActive &&
-            <div className={floatClasses} style={styles}>
+            <div className={floatClasses} style={boxShadow}>
               <div className="flex justify-center w-full h-full overflow-y-scroll">
                 <div className="self-center"><ErrorIcon /></div>
                 <span className="self-center text-3xl font-bold text-[#333]">{errorMessage}</span>

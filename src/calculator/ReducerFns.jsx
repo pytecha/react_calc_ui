@@ -124,7 +124,11 @@ export const keysReducer = (state, action) => {
     				} : {
     					...fnMainKeys,
     					...fnShiftKeys,
-    					...(isRegSd ? regSdKeys[0] : {}),
+    					...(isRegSd ? {
+      					  ...regSdKeys[0],
+      					  "pol-rec-colon": "❟"
+    					  } : {}
+    					),
     					...rclStoKeys,
     					...STO
     				}
@@ -136,7 +140,11 @@ export const keysReducer = (state, action) => {
     					...(isRegSd ? regSdKeys[0] : {})
     				} : {
     					...fnMainKeys,
-    					...(isRegSd ? regSdKeys[1] : {}),
+    					...(isRegSd ? {
+      					  ...regSdKeys[1],
+      					  "pol-rec-colon": ";"
+    					  } : {}
+    					),
     					...rclStoKeys,
     				}
 				  }

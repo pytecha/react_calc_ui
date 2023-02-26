@@ -12,28 +12,17 @@ body {
   background-color: hsl(216, 12.2%, 83.9%);
 }
 
-#screen, #funcspad, #numspad {
+#numspad {
+  font-size: 1.5em;
   font-family: Monospace;
 }
 
-#numspad {
-  font-size: 1.5em;
-}
-
 #funcspad {
+  font-family: Monospace;
   font-size: 1.15em;
 }
 
-#screen-input::-webkit-scrollbar {
-  display: none;
-}
-
-#screen-input {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-button:active {
+button:active, span[role="button"]:active, input:active {
   outline: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
