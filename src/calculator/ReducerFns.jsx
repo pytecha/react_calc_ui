@@ -117,36 +117,36 @@ export const keysReducer = (state, action) => {
 				...(toggles.shiftActive ? // button sto
 				  {
 				    fnKeys: toggles.stoActive ? {
-    					...fnMainKeys,
-    					...fnShiftKeys,
-    					...(isRegSd ? regSdKeys[1] : {}),
-    					...STO
-    				} : {
-    					...fnMainKeys,
-    					...fnShiftKeys,
-    					...(isRegSd ? {
-      					  ...regSdKeys[0],
-      					  "pol-rec-colon": "❟"
-    					  } : {}
-    					),
-    					...rclStoKeys,
-    					...STO
-    				}
+					...fnMainKeys,
+					...fnShiftKeys,
+					...(isRegSd ? regSdKeys[1] : {}),
+					...STO
+				} : {
+					...fnMainKeys,
+					...fnShiftKeys,
+					...(isRegSd ? {
+					  ...regSdKeys[0],
+					  "pol-rec-colon": ","
+					  } : {}
+					),
+					...rclStoKeys,
+					...STO
+				}
 				  }
 				    : // button rcl
 				  {
 				    fnKeys: toggles.rclActive ? {
-    					...fnMainKeys,
-    					...(isRegSd ? regSdKeys[0] : {})
-    				} : {
-    					...fnMainKeys,
-    					...(isRegSd ? {
-      					  ...regSdKeys[1],
-      					  "pol-rec-colon": ";"
-    					  } : {}
-    					),
-    					...rclStoKeys,
-    				}
+					...fnMainKeys,
+					...(isRegSd ? regSdKeys[0] : {})
+				} : {
+					...fnMainKeys,
+					...(isRegSd ? {
+					  ...regSdKeys[1],
+					  "pol-rec-colon": ";"
+					  } : {}
+					),
+					...rclStoKeys,
+				}
 				  }
 				),
 				toggles: {
@@ -168,7 +168,7 @@ export const keysReducer = (state, action) => {
 				}
 			}
 		case "togglepower":
-			if (toggles.powerActive && (action.state || action.button == "acoff")) {
+			if (toggles.powerActive && (action.state || action.button === "acoff")) {
 				return {
 					...state,
 					fnKeys: {
@@ -194,18 +194,18 @@ export const keysReducer = (state, action) => {
 					}
 				}
 			} else {
-  			return action.state ? {
-  				...state,
-  				fnKeys: {
-  					...fnMainKeys,
-  					...(isRegSd ? regSdKeys[0] : {})
-  				},
-  				toggles: {
-  					...toggles,
-  					powerActive: action.state,
-  					cursorActive: true
-  				}
-  			} : initialState;
+			return action.state ? {
+				...state,
+				fnKeys: {
+					...fnMainKeys,
+					...(isRegSd ? regSdKeys[0] : {})
+				},
+				toggles: {
+					...toggles,
+					powerActive: action.state,
+					cursorActive: true
+				}
+			} : initialState;
 			}
 		case "togglemodeorclear":
 			return {

@@ -1,5 +1,5 @@
 import {
-	useState, useEffect, useContext
+	useState, useContext
 }
 	from "react";
 import {
@@ -11,11 +11,11 @@ import TextIcon, {
 }
 	from "./Icons";
 
-export default ({
+export default function Controls({
 	props: [dispatchKeyState, dispatchExprTokenState, setAnswer]
-}) => {
+}) {
 	const {
-		shiftActive, alphaActive, clearActive, powerActive, modeActive, cursorActive, histActive, errorActive
+		shiftActive, alphaActive, clearActive, powerActive, modeActive, cursorActive, errorActive
 	} = useContext(StatesContext);
 
 	const defaultColors = "hsl(216, 12.2%, 83.9%)&maroon";

@@ -14,19 +14,18 @@ from "./Constants";
 
 let _toggles, _dispatchExprTokenState, _fetchApi, _handleRcl;
 
-export default ({
+export default function FuncsPad({
   props: [fnKeys, dispatchKeyState, dispatchExprTokenState, fetchApi, handleRcl, manageAppRefs]
-}) => {
+}) {
   // fetchApi -> fetchApiExtend
   const toggles = useContext(StatesContext);
   const eng = useRef(-1);
 
   const handleImpProp = () => {
-    if (toggles.shiftActive) fetchApi({
+    if (toggles.shiftActive || !toggles.cursorActive) fetchApi({
       endpoint: "conversion",
       kind: "frac"
     });
-    // else if (!toggles.cursorActive) {} // get proper frac
     else dispatchExprTokenState({
       type: "add",
       token: "@frac",

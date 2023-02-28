@@ -1,6 +1,5 @@
 import {
   useState,
-  useEffect,
   useRef,
   useReducer
 }
@@ -17,7 +16,7 @@ import {
 from "./calculator/Contexts";
 import {
   initialState,
-  initialAppVars,
+  appConst,
   voidFuncs
 }
 from "./calculator/Constants";
@@ -45,7 +44,8 @@ const App = () => {
     });
 
   const appRefs = useRef({
-    appVars: initialAppVars,
+    appConst: appConst,
+    appStat: {},
     appHist: [],
     activeReg: "lin",
     activeDp: 1,
@@ -96,20 +96,20 @@ const App = () => {
     `${baseUrl}/main`, data)
   .then(res => {
     setAnswer(res.data.solution[1]);
-    appRefs.current.appVars.Ans = res.data.solution[0];
+    appRefs.current.appConst.Ans = res.data.solution[0];
     appRefs.current.appHist.push(res.data.solution[0]);
     if (sto) {
       const Ans = res.data.solution[0];
       if (sto === "M+") {
-        appRefs.current.appVars.M += Ans;
-        setAnswer(appRefs.current.appVars.M);
+        appRefs.current.appConst.M += Ans;
+        setAnswer(appRefs.current.appConst.M);
       } else if (sto === "M-") {
-        appRefs.current.appVars.M -= Ans;
-        setAnswer(appRefs.current.appVars.M);
+        appRefs.current.appConst.M -= Ans;
+        setAnswer(appRefs.current.appConst.M);
       } else if (sto === "M") {
-        appRefs.current.appVars.M = Ans;
+        appRefs.current.appConst.M = Ans;
       } else {
-        appRefs.current.appVars[sto] = Ans;
+        appRefs.current.appConst[sto] = Ans;
       }
       ["M+",
         "M-",
@@ -117,7 +117,7 @@ const App = () => {
         dispatchKeyState({
           type: "multitoggles",
           states: {
-            slotmActive: appRefs.current.appVars.M === 0
+            slotmActive: appRefs.current.appConst.M !== 0
           }
         })
       );
@@ -146,7 +146,10 @@ const App = () => {
         toggles.degActive ? "deg":
         toggles.radActive ? "rad": "grad"
       ),
-      stats: appRefs.current.appVars,
+      stats: {
+        ...appRefs.current.appConst,
+        ...appRefs.current.appStat
+      },
       config: {
         disp: (
           toggles.fixActive ? "fix":
@@ -176,14 +179,12 @@ const App = () => {
       }
       axios.post(`${baseUrl}/${endpoint}`, data)
       .then(res => {
-        appRefs.current.appVars = {
-          ...appRefs.current.appVars, ...res.data.solution
-        };
+        appRefs.current.appStat = res.data.solution;
       })
       .catch(err => activateError(err.response?.statusText));
     } else {
       axios.post(`${baseUrl}/conversion`, {
-        expression: appRefs.current.appVars.Ans,
+        expression: appRefs.current.appConst.Ans,
         kind: kind,
         ...(["round", "eng"].includes(kind) ? {
           dp: kind === "eng" ? dp: appRefs.current.activeDp
@@ -192,8 +193,17 @@ const App = () => {
       .then(res => {
         if (kind === "round") {
           setAnswer(res.data.solution[1]);
-          appRefs.current.appVars.Ans = res.data.solution[0];
-        } else {
+          appRefs.current.appConst.Ans = res.data.solution[0];
+        } 
+        if (kind === "frac" && !toggles.shiftActive && !toggles.cursorActive) {
+          const [n, d] = res.data.solution.split("/").map(value => parseInt(value));
+          if (n > d && d !== 1) {
+            setAnswer([Math.floor(n/d), n%d, d].join("/"));
+          } else {
+            setAnswer([n, d].join("/"));
+          }
+        }
+        else {
           setAnswer(res.data.solution);
         }
       })
@@ -213,7 +223,7 @@ const App = () => {
           cursorActive: false
         }
       });
-      setAnswer(appRefs.current.appVars[input]);
+      setAnswer(appRefs.current.appConst[input]);
     }
     _dispatchExprTokenState({
       type: "add",
@@ -225,8 +235,8 @@ const App = () => {
   const manageAppRefs = ({
     key = "", value = ""
   }) => {
-    if (key === "appVars") {
-      return appRefs.current.appVars;
+    if (key === "app-vars") {
+      return {...appRefs.current.appConst, ...appRefs.current.appStat};
     } else if (key === "appHist") {
       return appRefs.current.appHist;
     } else if (key) {
@@ -234,7 +244,8 @@ const App = () => {
       appRefs.current[key] = value;
     } else {
       // reset
-      appRefs.current.appVars = initialAppVars;
+      appRefs.current.appConst = appConst;
+      appRefs.current.appStat = {};
     }
   };
 

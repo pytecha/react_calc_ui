@@ -2,7 +2,7 @@ const styles = {
   "width": "2em",
   "height": "2em",
 };
-export default ({ text, fillStroke, fillStroke2 }) => {
+export default function TextIcon({ text, fillStroke, fillStroke2 }) {
   return (
     <svg id="text-icon" viewBox="0 0 30 30" style={styles}>
       <circle cx="15px" cy="15px" r="12px" fill={fillStroke2} stroke={fillStroke} strokeWidth="3px" />

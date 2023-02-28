@@ -12,9 +12,9 @@ import {
 	from "./Constants";
 
 let _toggles, _dispatchExprTokenState;
-export default ({
+export default function NumsPad({
 	props: [nmKeys, dispatchKeyState, dispatchExprTokenState, fetchApi, setAnswer]
-}) => {
+}) {
 	const toggles = useContext(StatesContext);
 
 	const handleAcOff = () => {

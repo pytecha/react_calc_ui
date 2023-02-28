@@ -20,7 +20,7 @@ export const fnMainKeys = {
   "eng-reng": ["ENG"],
   "lparen": ["("],
   "rparen-x": [")"],
-  "comma-smcolon-y": [",", ",", "❟"],
+  "comma-smcolon-y": [","],
   "ms-dt-cl": ["M+"]
 }
 
@@ -55,7 +55,7 @@ export const fnShiftKeys = {
   "imp-prop": ["d/c"],
   "expt-xrot": ["@xroot", <span><sup>ℵ</sup>√</span>, <span><sup>x</sup>√</span>],
   "log-10x": ["@powtx", "10^", <span>10<sup>x</sup></span>],
-  "ln-ex-e": ["@powex", "e^", <span>e<sup>x</sup></span>],
+  "ln-ex-e": ["@powex", <span><em>e</em>^</span>, <span>e<sup>x</sup></span>],
   "deg-conv-b": ["←θ"],
   "sin-d": ["@asin", <span>sin<sup>-1</sup></span>],
   "cos-e": ["@acos", <span>cos<sup>-1</sup></span>],
@@ -90,7 +90,7 @@ export const rclStoKeys = {
 
 export const alphaKeys = {
   "pol-rec-colon": [":"],
-  "ln-ex-e": ["@e", "e"],
+  "ln-ex-e": ["@e", <em>e</em>, "e"],
   ...rclStoKeys
 }
 
@@ -112,7 +112,7 @@ export const regSdKeys = [
     "ms-dt-cl": ["DT"]
   },
   {
-    "pol-rec-colon": [",",",","❟"],
+    "pol-rec-colon": [","],
     "ms-dt-cl": ["CL"],
     "five-stat": ["STAT"]
   }
@@ -157,7 +157,7 @@ export const stateClasses = {
   stoActive: "text-[#800000] bg-gray-400",
   regSdActive: "bg-purple-800 text-gray-100"
 }
-export const initialAppVars = {
+export const appConst = {
   A: 0,
   Ans: 0,
   B: 0,
@@ -167,28 +167,7 @@ export const initialAppVars = {
   F: 0,
   M: 0,
   X: 0,
-  Y: 0,
-  a: 0,
-  b: 0,
-  c: 0,
-  meanx: 0,
-  meany: 0,
-  n: 0,
-  pstdx: 0,
-  pstdy: 0,
-  r: 0,
-  stdx: 0,
-  stdy: 0,
-  sumfrx: 0,
-  sumtrx: 0,
-  sumtwx: 0,
-  sumtwxy: 0,
-  sumtwy: 0,
-  sumx: 0,
-  sumxy: 0,
-  sumy: 0,
-  xpred: '',
-  ypred: ''
+  Y: 0
 }
 
 export const statsEntry = [

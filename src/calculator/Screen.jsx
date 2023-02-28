@@ -13,13 +13,15 @@ import {
 import styles from "./screen.module.css";
 import { ErrorIcon } from "./Icons";
 
-export default ({
+export default function Screen({
   props: [exprs, answer, setAnswer, errorMessage, dispatchKeyState, dispatchExprTokenState, manageAppRefs]
-}) => {
+}) {
   const toggles = useContext(StatesContext);
   const [rangeState, setRangeState] = useState({open: false, value: 1});
+  const appVars = manageAppRefs({ key: "app-vars" });
   const exprDiv = useRef(null);
   const exprSpan2 = useRef(null);
+  
   const {left, right} = exprs;
   const rightMaxIndex = right.length - 1;
   const boxShadow = {
@@ -30,8 +32,7 @@ export default ({
   const gridClasses = "border-2 border-gray-300 p-1 rounded mt-1";
   const classesPassive = "bg-gray-300 text-gray-400";
   const classesActive = "bg-red-900 text-gray-100";
-  const appVars = manageAppRefs({ key: "appVars" });
-
+  
   const modeOff = () => {
     const timeoutId = setTimeout(() => {
       dispatchKeyState({ type: "togglemodeorclear" });
@@ -83,7 +84,14 @@ export default ({
                   >
                     X
                   </span>
-                  <label htmlFor="range-input" className="block text-center">{rangeState?.initiater === "REG"  ? <><span>F: </span> {RegFormulae[rangeState.value][1]}</> : `Level: ${rangeState.value}`}</label>
+                  <label htmlFor="range-input" className="block text-center">
+                    {
+                      rangeState?.initiater === "REG"  ?
+                      <><span>F: </span> {RegFormulae[rangeState.value][1]}</>
+                        :
+                      <><span>Level: </span> {rangeState.value}</>
+                    }
+                  </label>
                   <input
                     className={`block border-0 rounded bg-gray-100 ring-2 ring-gray-300 focus:outline-none px-1 text-center w-[8em] mx-auto ${styles.rangeselector}`}
                     type="range" step="1" value={rangeState.value}
@@ -223,9 +231,9 @@ export default ({
                       <span
                         className={`${optionsClasses} bg-gray-400 text-red-900 font-semibold`}
                         onClick={() => {
-                          dispatchKeyState({ type: "togglemodeorclear" })
-                          dispatchKeyState({ type: "toggleshift" })
-                          dispatchKeyState({ type: "togglemodeorclear" })
+                          dispatchKeyState({ type: "togglemodeorclear" });
+                          dispatchKeyState({ type: "toggleshift" });
+                          dispatchKeyState({ type: "togglemodeorclear" });
                         }}
                       >
                         CLR
@@ -276,9 +284,12 @@ export default ({
                     dispatchKeyState({
                       type: "multitoggles",
                       states: {
-                        slotmActive: false
+                        slotmActive: false,
+                        degActive: true,
+                        radActive: false,
+                        gradActive: false
                       }
-                    })
+                    });
                     modeOff();
                   }}
                 >
@@ -310,16 +321,17 @@ export default ({
 
           {toggles.statActive &&
             <div className={`${floatClasses} z-50 overflow-y-scroll`} style={boxShadow}>
-              <span className="block py-1 font-bold text-lg text-center bg-gray-500 rounded-sm">STATS (<span className="text-sm">Double Tap Select</span>)</span>
+              <span className="block py-1 font-bold text-lg text-center bg-gray-500 rounded-sm">STAT (<span className="text-sm">Double Tap Select</span>)</span>
               <div className="grid grid-cols-5 gap-0.5 mt-1">
                 {statsEntry
-                  .map((value, key) => (
+                  .filter(value => value[0] in appVars)
+                  .map(([tokenKey, input]) => (
                     <div
-                      key={key}
+                      key={tokenKey}
                       className="bg-gray-300 rounded p-1"
                       role="button"
                       onDoubleClick={() => {
-                        dispatchExprTokenState({ type: "add", token: appVars[value[0]], input: value[1] || value[0], ins: toggles.insActive });
+                        dispatchExprTokenState({ type: "add", token: appVars[tokenKey], input: input ?? tokenKey, ins: toggles.insActive });
                         dispatchKeyState({
                           type: "multitoggles",
                           states: {
@@ -329,19 +341,11 @@ export default ({
                         dispatchKeyState({ type: "multitoggles", states: {modeActive: false} })
                       }}
                     >
-                      <span className="block text-sm font-semibold">{value[1] || value[0]}:</span>
+                      <span className="block text-sm font-semibold">{input ?? tokenKey}:</span>
                       <span
                         className="block text-xs overflow-x-scroll whitespace-nowrap"
                       >
-                        {
-                          function(obj, key) {
-                            obj = obj[key]
-                            return key.includes("pred") ?
-                              obj.slice(6, obj.length).replace(/@/g, "")
-                                :
-                              obj;
-                          }(appVars, value[0])
-                        }
+                        {/.pred/.test(tokenKey) ? appVars[tokenKey].replace(/(@|.pred)/g, "") : appVars[tokenKey]}
                       </span>
                     </div>
                   ))
