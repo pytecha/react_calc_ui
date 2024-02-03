@@ -13,7 +13,7 @@ import {
   tokensReducer
 } from "./../utilities/declarations";
 
-const baseUrl = "https://pytecha.pythonanywhere.com";
+const baseUrl = "https://pytecha.pythonanywhere.com/api/solutions";
 // const baseUrl = "http://localhost:5000/api/solutions";
 const reqConfig = {
   headers: {
