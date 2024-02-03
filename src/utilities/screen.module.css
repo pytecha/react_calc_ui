@@ -1,0 +1,172 @@
+.scroll {
+  overflow: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.cursor:after {
+  content: '';
+  background-color: #333;
+  display: inline-block;
+  width: 0.125em;
+  height: 1.375em;
+  position: absolute;
+  top: 0.5em;
+  opacity: 1;
+  /*z-index: 45;*/
+}
+
+.blink:after {
+  opacity: 0;
+  animation: blink 0.5s linear infinite alternate;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+  
+  100% {
+    opacity: 1;
+  }
+}
+
+.rangeselector {
+  height: 28px;
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.rangeselector:focus {
+  outline: none;
+}
+
+.rangeselector::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 7.5px;
+  cursor: pointer;
+  background: hsl(0, 62.8%, 30.6%);
+  border-radius: 15px;
+  border: 1px solid transparent;
+}
+
+.rangeselector::-webkit-slider-thumb {
+  border: 1px solid transparent;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: hsl(215, 13.8%, 34.1%);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -4.5px;
+}
+
+.rangeselector:focus::-webkit-slider-runnable-track {
+  background: hsl(0, 62.8%, 30.6%);
+}
+
+.rangeselector::-moz-range-track {
+  width: 100%;
+  height: 7.5px;
+  cursor: pointer;
+  background: hsl(0, 62.8%, 30.6%);
+  border-radius: 15px;
+  border: 1px solid transparent;
+}
+
+.rangeselector::-moz-range-thumb {
+  border: 1px solid transparent;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: hsl(215, 13.8%, 34.1%);
+  cursor: pointer;
+}
+
+.rangeselector::-ms-track {
+  width: 100%;
+  height: 7.5px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+.rangeselector::-ms-fill-lower {
+  background: hsl(0, 62.8%, 30.6%);
+  border: 1px solid transparent;
+  border-radius: 30px;
+}
+
+.rangeselector::-ms-fill-upper {
+  background: hsl(0, 62.8%, 30.6%);
+  border: 1px solid transparent;
+  border-radius: 30px;
+}
+
+.rangeselector::-ms-thumb {
+  margin-top: 1px;
+  border: 1px solid transparent;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: hsl(215, 13.8%, 34.1%);
+  cursor: pointer;
+}
+
+.rangeselector:focus::-ms-fill-lower {
+  background: hsl(0, 62.8%, 30.6%);
+}
+
+.rangeselector:focus::-ms-fill-upper {
+  background: hsl(0, 62.8%, 30.6%);
+}
+
+.loader {
+  display: flex;
+  justify-content: space-between;
+  width: 45px;
+  height: 45px;
+}
+.loader > * {
+  background-color: maroon;
+  width: 4.5px;
+  align-self: center;
+  border-radius: 2px;
+  animation-name: loader;
+  animation-duration: 0.75s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+.bar_1, .bar_7 {
+  height: 15px;
+  animation-delay: 0.3s
+}
+.bar_2, .bar_6 {
+  height: 25px;
+  animation-delay: 0.5s
+}
+.bar_3, .bar_5 {
+  height: 40px;
+  animation-delay: 0.7s
+}
+.bar_4 {
+  height: inherit;
+  animation-delay: 0.9s
+}
+@keyframes loader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

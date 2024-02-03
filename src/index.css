@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: aquire;
+  src: url("./assets/AquireBold.otf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: digital;
+  src: url("./assets/digital-7.ttf");
+}
+
+body {
+  background-color: hsl(216, 12.2%, 83.9%);
+}
+
+#numspad {
+  font-size: 1.5em;
+  font-family: Monospace;
+}
+
+#funcspad {
+  font-family: Monospace;
+  font-size: 1.15em;
+}
+
+#numspad button:active,
+#funcspad button:active {
+  background-color: lawngreen;
+}
+
+button:active, span[role="button"]:active, input:active {
+  outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+em {
+  display: inline-block;
+  font-style: normal;
+  padding: 0px 2px 0px 2px;
+  color: maroon;
+}
